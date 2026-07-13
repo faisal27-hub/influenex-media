@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: influnex-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: FRONTEND_URL
+        sync: false   # Set your Vercel URL here in Render dashboard
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false   # Your Gmail address
+      - key: SMTP_PASS
+        sync: false   # Your Gmail App Password
+      - key: ADMIN_EMAIL
+        sync: false   # Email to receive contact form submissions

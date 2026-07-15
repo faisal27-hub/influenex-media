@@ -68,19 +68,19 @@ export default function CreatorCard({ creator, index }: CreatorCardProps) {
         </div>
 
         {/* Stats Row */}
-        <div className="relative grid grid-cols-2 gap-3 mb-5">
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
+        <div className="relative grid grid-cols-2 gap-2 sm:gap-3 mb-5">
+          <div className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-3 rounded-xl bg-white/5 border border-white/5 min-w-0">
             <Users size={14} className="text-accent shrink-0" />
-            <div>
-              <div className="text-white font-bold text-sm">{creator.followers}</div>
-              <div className="text-slate-400 text-xs">Followers</div>
+            <div className="min-w-0">
+              <div className="text-white font-bold text-xs sm:text-sm truncate">{creator.followers}</div>
+              <div className="text-slate-400 text-[10px] sm:text-xs truncate">Followers</div>
             </div>
           </div>
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-white/5 border border-white/5">
+          <div className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-3 rounded-xl bg-white/5 border border-white/5 min-w-0">
             <TrendingUp size={14} className="text-cyan-400 shrink-0" />
-            <div>
-              <div className="text-white font-bold text-sm">{creator.engagement}</div>
-              <div className="text-slate-400 text-xs">Engagement</div>
+            <div className="min-w-0">
+              <div className="text-white font-bold text-xs sm:text-sm truncate">{creator.engagement}</div>
+              <div className="text-slate-400 text-[10px] sm:text-xs truncate">Engagement</div>
             </div>
           </div>
         </div>
@@ -106,11 +106,11 @@ export default function CreatorCard({ creator, index }: CreatorCardProps) {
         </p>
 
         {/* Language + Category */}
-        <div className="flex items-center gap-3 mb-5">
+        <div className="flex flex-wrap items-center gap-y-2 gap-x-3 mb-5">
           <div className="flex items-center gap-1.5 text-slate-400 text-xs">
             <span>🌐</span> {creator.language}
           </div>
-          <div className="w-px h-3 bg-slate-800" />
+          <div className="hidden sm:block w-px h-3 bg-slate-800" />
           <div className="flex items-center gap-1.5 text-slate-400 text-xs">
             <span>📁</span> {creator.category}
           </div>

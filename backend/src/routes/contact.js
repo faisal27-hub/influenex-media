@@ -133,10 +133,11 @@ router.post('/', async (req, res) => {
     // ── Option A: Resend API Delivery (Recommended for 100% Inbox Delivery) ──
     if (process.env.RESEND_API_KEY) {
       console.log('🚀 Sending email via Resend HTTP API...');
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resendApiKey = process.env.RESEND_API_KEY.trim();
+      const resend = new Resend(resendApiKey);
       const fromEmail = process.env.RESEND_FROM || 'onboarding@resend.dev';
 
-      await resend.emails.send({
+      const resendResponse = await resend.emails.send({
         from: `Influnex Media <${fromEmail}>`,
         to: adminRecipient,
         replyTo: email,
@@ -144,19 +145,25 @@ router.post('/', async (req, res) => {
         html: adminHtml,
       });
 
-      await resend.emails.send({
-        from: `Influnex Media <${fromEmail}>`,
-        to: email,
-        subject: `We received your campaign brief, ${fullName}!`,
-        html: userHtml,
-      }).catch(e => console.warn('Resend user auto-reply warning:', e.message));
+      if (resendResponse.error) {
+        console.error('❌ Resend API Error:', resendResponse.error);
+        // Fallback to Option B (SMTP) below instead of returning fake success
+      } else {
+        console.log('✅ Resend Admin Email Sent Successfully! ID:', resendResponse.data?.id);
 
-      console.log('✅ Resend emails sent successfully!');
+        // Try user auto-reply (Note: onboarding@resend.dev only allows sending to registered account email in test mode)
+        resend.emails.send({
+          from: `Influnex Media <${fromEmail}>`,
+          to: email,
+          subject: `We received your campaign brief, ${fullName}!`,
+          html: userHtml,
+        }).catch(e => console.warn('Resend user auto-reply notice:', e.message));
 
-      return res.status(200).json({
-        success: true,
-        message: "Thank you! Your campaign brief has been submitted successfully. We'll get back to you within 24 hours.",
-      });
+        return res.status(200).json({
+          success: true,
+          message: "Thank you! Your campaign brief has been submitted successfully. We'll get back to you within 24 hours.",
+        });
+      }
     }
 
     // ── Option B: Nodemailer SMTP Fallback ────────────────────────────────
@@ -179,15 +186,33 @@ router.post('/', async (req, res) => {
         }),
       ]);
 
+      let adminMailFailed = false;
+      let failureReason = '';
+
       results.forEach((resItem, i) => {
         if (resItem.status === 'rejected') {
           console.error(`❌ SMTP Email error (${i === 0 ? 'Admin' : 'Auto-reply'}):`, resItem.reason);
+          if (i === 0) {
+            adminMailFailed = true;
+            failureReason = resItem.reason?.message || 'SMTP authentication or socket error';
+          }
         } else {
           console.log(`✅ SMTP Email sent (${i === 0 ? 'Admin' : 'Auto-reply'}):`, resItem.value.messageId);
         }
       });
-    } else {
-      console.warn('⚠️ SMTP not configured or placeholder used. Email delivery skipped.');
+
+      if (adminMailFailed) {
+        return res.status(500).json({
+          success: false,
+          message: `Email delivery failed: ${failureReason}`,
+        });
+      }
+    } else if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ Neither RESEND_API_KEY nor valid SMTP_PASS configured.');
+      return res.status(500).json({
+        success: false,
+        message: 'Server email service is not configured. Please add RESEND_API_KEY or SMTP credentials.',
+      });
     }
 
     return res.status(200).json({

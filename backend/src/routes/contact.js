@@ -136,9 +136,10 @@ router.post('/', async (req, res) => {
       const resendApiKey = process.env.RESEND_API_KEY.trim();
       const resend = new Resend(resendApiKey);
       const fromEmail = process.env.RESEND_FROM || 'onboarding@resend.dev';
+      const senderString = fromEmail.includes('<') ? fromEmail : `Influnex Media <${fromEmail}>`;
 
       const resendResponse = await resend.emails.send({
-        from: `Influnex Media <${fromEmail}>`,
+        from: senderString,
         to: adminRecipient,
         replyTo: email,
         subject: `🚀 New Campaign Brief from ${companyName}`,
@@ -147,13 +148,19 @@ router.post('/', async (req, res) => {
 
       if (resendResponse.error) {
         console.error('❌ Resend API Error:', resendResponse.error);
-        // Fallback to Option B (SMTP) below instead of returning fake success
+        // If SMTP is not configured, fail fast so frontend displays the exact error
+        if (!process.env.SMTP_PASS || process.env.SMTP_PASS === 'your-gmail-app-password') {
+          return res.status(500).json({
+            success: false,
+            message: `Resend API Error: ${resendResponse.error.message || JSON.stringify(resendResponse.error)}`,
+          });
+        }
       } else {
         console.log('✅ Resend Admin Email Sent Successfully! ID:', resendResponse.data?.id);
 
         // Try user auto-reply (Note: onboarding@resend.dev only allows sending to registered account email in test mode)
         resend.emails.send({
-          from: `Influnex Media <${fromEmail}>`,
+          from: senderString,
           to: email,
           subject: `We received your campaign brief, ${fullName}!`,
           html: userHtml,

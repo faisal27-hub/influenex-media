@@ -4,13 +4,15 @@ const nodemailer = require('nodemailer');
 
 // ── Nodemailer Transport ───────────────────────────────────────
 const createTransport = () => {
-  // Use specialized Gmail service handler if SMTP host is gmail
+  // Strip any spaces from the App Password automatically (e.g. "abcd efgh ijkl mnop" -> "abcdefghijklmnop")
+  const smtpPass = (process.env.SMTP_PASS || '').replace(/\s+/g, '');
+
   if (process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail.com')) {
     return nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        pass: smtpPass,
       },
     });
   }
@@ -20,7 +22,7 @@ const createTransport = () => {
     secure: false,
     auth: {
       user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      pass: smtpPass,
     },
   });
 };

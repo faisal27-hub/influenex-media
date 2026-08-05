@@ -182,12 +182,19 @@ export default function About() {
                 We don't just run campaigns. We build creator partnerships that generate real business outcomes — traffic, leads, and revenue that compound over time.
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 p-2 flex items-center justify-center shrink-0 shadow-lg shadow-purple-500/10">
-                  <img
-                    src="/logo.svg?v=4"
-                    alt="Influnex Media Logo"
-                    className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(232,28,255,0.4)]"
-                  />
+                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 p-2 flex items-center justify-center shrink-0 shadow-lg shadow-purple-500/20">
+                  <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(232,28,255,0.6)]">
+                    <circle cx="22" cy="14" r="9" fill="#e81cff" />
+                    <rect x="14" y="27" width="16" height="52" rx="8" fill="url(#about-quote-logo-grad)" />
+                    <path d="M22 27L50 62L78 27V79" stroke="url(#about-quote-logo-grad)" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    <defs>
+                      <linearGradient id="about-quote-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#e81cff" />
+                        <stop offset="50%" stopColor="#a855f7" />
+                        <stop offset="100%" stopColor="#00b4ec" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
                 </div>
                 <div>
                   <div className="text-slate-400 text-xs font-mono">influnexmedia.in@gmail.com</div>

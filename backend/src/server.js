@@ -18,22 +18,9 @@ app.use(helmet({
 }));
 app.use(compression());
 
-// Configure CORS
-const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
-  'http://localhost:3000',
-  'http://localhost:5000'
-];
-
+// Configure CORS to dynamically accept requesting origins (Vercel, custom domains, local dev)
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, postman)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
-      return callback(null, true);
-    }
-    return callback(new Error('CORS Policy: Origin not allowed.'), false);
-  },
+  origin: true,
   credentials: true
 }));
 

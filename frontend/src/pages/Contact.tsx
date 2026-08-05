@@ -74,7 +74,8 @@ export default function Contact() {
     };
 
     try {
-      const apiBase = import.meta.env.VITE_API_URL ?? '';
+      const rawApiBase = import.meta.env.VITE_API_URL || '';
+      const apiBase = rawApiBase.replace(/\/+$/, '');
       const res = await fetch(`${apiBase}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,7 +89,8 @@ export default function Contact() {
         const data = await res.json().catch(() => ({}));
         setServerError(data.message || 'Failed to submit campaign brief. Please check your network and try again.');
       }
-    } catch {
+    } catch (err: unknown) {
+      console.error('Contact submit error:', err);
       setServerError('Unable to connect to the server. Please check your network connection and try again.');
     } finally {
       setSubmitting(false);

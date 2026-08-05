@@ -182,13 +182,11 @@ export default function About() {
                 We don't just run campaigns. We build creator partnerships that generate real business outcomes — traffic, leads, and revenue that compound over time.
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600/20 to-cyan-500/20 border border-white/10 p-2 flex items-center justify-center shrink-0">
-                  <img
-                    src="/favicon.svg"
-                    alt="Influnex Media Logo"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+                <img
+                  src="/logo.png?v=2"
+                  alt="Influnex Media Logo"
+                  className="h-10 w-auto object-contain"
+                />
                 <div>
                   <div className="text-white font-semibold text-sm">Influnex Media</div>
                   <div className="text-slate-400 text-xs font-mono">influnexmedia.in@gmail.com</div>

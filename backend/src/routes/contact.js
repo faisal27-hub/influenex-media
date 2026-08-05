@@ -54,21 +54,18 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Return instant success response to the user so UI transitions immediately (<0.2s)
-    res.status(200).json({
-      success: true,
-      message: "Thank you! Your campaign brief has been submitted successfully. We'll get back to you within 24 hours.",
-    });
-
     const senderEmail = (process.env.SMTP_USER || 'influnexmedia.in@gmail.com').trim();
+    const adminRecipient = (process.env.ADMIN_EMAIL || 'influnexmedia.in@gmail.com').trim();
 
-    // Send emails in the background if SMTP_PASS is provided
+    // Check SMTP configuration
     if (process.env.SMTP_PASS && process.env.SMTP_PASS !== 'your-gmail-app-password') {
       const transporter = createTransport();
 
-      const adminMail = transporter.sendMail({
+      // Admin notification email
+      const adminMailOptions = {
         from: `"Influnex Media Website" <${senderEmail}>`,
-        to: 'influnexmedia.in@gmail.com',
+        to: adminRecipient,
+        replyTo: email,
         subject: `🚀 New Campaign Brief from ${companyName}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f172a; color: #e2e8f0; padding: 32px; border-radius: 16px;">
@@ -109,9 +106,10 @@ router.post('/', async (req, res) => {
             </div>
           </div>
         `,
-      });
+      };
 
-      const userMail = transporter.sendMail({
+      // Auto-reply to submitter
+      const userMailOptions = {
         from: `"Influnex Media" <${senderEmail}>`,
         to: email,
         subject: `We received your campaign brief, ${fullName}!`,
@@ -148,28 +146,35 @@ router.post('/', async (req, res) => {
             </div>
           </div>
         `,
-      });
+      };
 
-      Promise.allSettled([adminMail, userMail]).then(results => {
-        results.forEach((res, i) => {
-          if (res.status === 'rejected') {
-            console.error(`❌ Background Email ${i === 0 ? 'Admin' : 'Auto-reply'} delivery error:`, res.reason);
-          } else {
-            console.log(`✅ Background Email ${i === 0 ? 'Admin' : 'Auto-reply'} sent successfully.`);
-          }
-        });
+      // Await both emails in parallel so execution is NOT frozen before completion by cloud platform
+      const results = await Promise.allSettled([
+        transporter.sendMail(adminMailOptions),
+        transporter.sendMail(userMailOptions),
+      ]);
+
+      results.forEach((res, i) => {
+        if (res.status === 'rejected') {
+          console.error(`❌ Email delivery error (${i === 0 ? 'Admin' : 'Auto-reply'}):`, res.reason);
+        } else {
+          console.log(`✅ Email sent successfully (${i === 0 ? 'Admin' : 'Auto-reply'}):`, res.value.messageId);
+        }
       });
     } else {
-      console.warn('⚠️ SMTP not configured or using placeholder credentials. Email delivery skipped in development/fallback mode.');
+      console.warn('⚠️ SMTP not configured or placeholder used. Email delivery skipped.');
     }
+
+    return res.status(200).json({
+      success: true,
+      message: "Thank you! Your campaign brief has been submitted successfully. We'll get back to you within 24 hours.",
+    });
   } catch (err) {
     console.error('❌ Contact submission handler error:', err);
-    if (!res.headersSent) {
-      return res.status(500).json({
-        success: false,
-        message: err.message || 'Failed to submit campaign brief.',
-      });
-    }
+    return res.status(500).json({
+      success: false,
+      message: err.message || 'Failed to submit campaign brief.',
+    });
   }
 });
 

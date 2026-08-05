@@ -4,25 +4,20 @@ const nodemailer = require('nodemailer');
 
 // ── Nodemailer Transport ───────────────────────────────────────
 const createTransport = () => {
-  // Strip any spaces from the App Password automatically (e.g. "abcd efgh ijkl mnop" -> "abcdefghijklmnop")
+  const smtpUser = (process.env.SMTP_USER || 'influnexmedia.in@gmail.com').trim();
   const smtpPass = (process.env.SMTP_PASS || '').replace(/\s+/g, '');
 
-  if (process.env.SMTP_HOST && process.env.SMTP_HOST.includes('gmail.com')) {
-    return nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: smtpPass,
-      },
-    });
-  }
+  // Use Gmail SSL (Port 465) which is far more reliable on cloud platforms (Render/AWS) than Port 587
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
-      user: process.env.SMTP_USER,
+      user: smtpUser,
       pass: smtpPass,
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   });
 };
@@ -65,12 +60,14 @@ router.post('/', async (req, res) => {
       message: "Thank you! Your campaign brief has been submitted successfully. We'll get back to you within 24 hours.",
     });
 
-    // Send emails in the background without blocking the user's response
-    if (process.env.SMTP_USER && process.env.SMTP_PASS && process.env.SMTP_PASS !== 'your-gmail-app-password') {
+    const senderEmail = (process.env.SMTP_USER || 'influnexmedia.in@gmail.com').trim();
+
+    // Send emails in the background if SMTP_PASS is provided
+    if (process.env.SMTP_PASS && process.env.SMTP_PASS !== 'your-gmail-app-password') {
       const transporter = createTransport();
 
       const adminMail = transporter.sendMail({
-        from: `"Influnex Media Website" <${process.env.SMTP_USER}>`,
+        from: `"Influnex Media Website" <${senderEmail}>`,
         to: 'influnexmedia.in@gmail.com',
         subject: `🚀 New Campaign Brief from ${companyName}`,
         html: `
@@ -115,7 +112,7 @@ router.post('/', async (req, res) => {
       });
 
       const userMail = transporter.sendMail({
-        from: `"Influnex Media" <${process.env.SMTP_USER}>`,
+        from: `"Influnex Media" <${senderEmail}>`,
         to: email,
         subject: `We received your campaign brief, ${fullName}!`,
         html: `

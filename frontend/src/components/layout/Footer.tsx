@@ -47,7 +47,7 @@ export default function Footer() {
           <div className="flex flex-col items-start">
             <Link to="/" className="flex items-center mb-6 group select-none">
               <img
-                src="/logo.png"
+                src="/logo.png?v=2"
                 alt="Influnex Media Logo"
                 className="h-9 w-auto object-contain transition-transform duration-300 group-hover:opacity-90"
               />

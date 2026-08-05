@@ -63,7 +63,7 @@ export function LoadingScreen() {
             className="mb-8"
           >
             <img
-              src="/logo.png"
+              src="/logo.png?v=2"
               alt="Influnex Media Logo"
               className="h-14 w-auto object-contain"
             />

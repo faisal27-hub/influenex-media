@@ -40,15 +40,12 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex-1 flex justify-start">
-            <Link to="/" className="flex items-center gap-3 group select-none">
+            <Link to="/" className="flex items-center group select-none">
               <img
-                src="/favicon.svg"
+                src="/logo.png"
                 alt="Influnex Media Logo"
-                className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-9 w-auto object-contain transition-transform duration-300 group-hover:opacity-90"
               />
-              <span className="font-display font-bold text-lg md:text-xl tracking-tight text-white">
-                Influnex <span className="gradient-text">Media</span>
-              </span>
             </Link>
           </div>
 

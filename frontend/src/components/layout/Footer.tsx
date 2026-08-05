@@ -45,15 +45,12 @@ export default function Footer() {
           
           {/* Column 1: Brand */}
           <div className="flex flex-col items-start">
-            <Link to="/" className="flex items-center gap-3 mb-6 group select-none">
+            <Link to="/" className="flex items-center mb-6 group select-none">
               <img
-                src="/favicon.svg"
+                src="/logo.png"
                 alt="Influnex Media Logo"
-                className="h-8 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-9 w-auto object-contain transition-transform duration-300 group-hover:opacity-90"
               />
-              <span className="font-display font-bold text-lg md:text-xl tracking-tight text-white">
-                Influnex <span className="gradient-text">Media</span>
-              </span>
             </Link>
             <p className="text-slate-300 text-sm leading-relaxed max-w-[240px] transition-colors duration-300">
               Helping brands connect with trusted creators through impactful influencer marketing campaigns.

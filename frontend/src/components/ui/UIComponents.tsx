@@ -62,16 +62,11 @@ export function LoadingScreen() {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <div className="flex items-center gap-3.5 select-none">
-              <img
-                src="/favicon.svg"
-                alt="Influnex Media Logo"
-                className="h-12 w-auto object-contain"
-              />
-              <span className="font-display font-bold text-2xl tracking-tight text-white">
-                Influnex <span className="gradient-text">Media</span>
-              </span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Influnex Media Logo"
+              className="h-14 w-auto object-contain"
+            />
           </motion.div>
 
           {/* Progress Bar */}

@@ -88,7 +88,7 @@ export default function Contact() {
         const data = await res.json().catch(() => ({}));
         setServerError(data.message || 'Failed to submit campaign brief. Please check your network and try again.');
       }
-    } catch (err) {
+    } catch {
       setServerError('Unable to connect to the server. Please check your network connection and try again.');
     } finally {
       setSubmitting(false);

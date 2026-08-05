@@ -1,11 +1,11 @@
 <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
   <circle cx="22" cy="14" r="8.5" fill="#e81cff" />
-  <rect x="14" y="27" width="16" height="52" rx="8" fill="url(#im-grad)" />
-  <path d="M22 27L50 62L78 27V79" stroke="url(#im-grad)" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" />
+  <rect x="14" y="27" width="16" height="52" rx="8" fill="url(#im-glow-grad)" />
+  <path d="M22 27L50 62L78 27V79" stroke="url(#im-glow-grad)" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" fill="none" />
   <defs>
-    <linearGradient id="im-grad" x1="14" y1="14" x2="78" y2="79" gradientUnits="userSpaceOnUse">
+    <linearGradient id="im-glow-grad" x1="14" y1="14" x2="78" y2="79" gradientUnits="userSpaceOnUse">
       <stop stopColor="#e81cff" />
-      <stop offset="0.5" stopColor="#9d4edd" />
+      <stop offset="0.4" stopColor="#a855f7" />
       <stop offset="1" stopColor="#00b4ec" />
     </linearGradient>
   </defs>
